@@ -3,9 +3,10 @@ AC_PREREQ([2.61])
 AC_INIT([zbar], [0.10], [spadix@users.sourceforge.net])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR(config)
-AM_INIT_AUTOMAKE([1.10 -Wall -Werror foreign subdir-objects std-options dist-bzip2])
+AM_INIT_AUTOMAKE([1.10 -Wall foreign subdir-objects std-options dist-bzip2])
 AC_CONFIG_HEADERS([include/config.h])
 AC_CONFIG_SRCDIR(zbar/scanner.c)
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 LT_PREREQ([2.2])
 LT_INIT([dlopen win32-dll])
 LT_LANG([Windows Resource])
@@ -107,9 +108,9 @@ dnl symbologies
 
 AC_ARG_ENABLE([codes],
   [AS_HELP_STRING([--enable-codes=SYMS],
-    [select symbologies to compile [default=ean,databar,code128,code93,code39,codabar,i25,qrcode]])],
+    [select symbologies to compile [default=ean,databar,code128,code93,code39,codabar,i25,qrcode,telepen]])],
   [],
-  [enable_codes="ean,databar,code128,code93,code39,codabar,i25,qrcode"])
+  [enable_codes="ean,databar,code128,code93,code39,codabar,i25,qrcode,telepen"])
 
 AC_DEFUN([ZBAR_CHK_CODE], [
   AC_MSG_CHECKING([whether to build $2])
@@ -128,6 +129,7 @@ AC_DEFUN([ZBAR_CHK_CODE], [
 
 ZBAR_CHK_CODE([ean], [EAN symbologies])
 ZBAR_CHK_CODE([databar], [DataBar symbology])
+ZBAR_CHK_CODE([telepen], [Telepen symbology])
 ZBAR_CHK_CODE([code128], [Code 128 symbology])
 ZBAR_CHK_CODE([code93], [Code 93 symbology])
 ZBAR_CHK_CODE([code39], [Code 39 symbology])
