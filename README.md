@@ -16,6 +16,24 @@ Check the ZBar home page for the latest release, mailing lists, etc.
 License information can be found in 'COPYING'.
 
 
+TELEPEN SYMBOLOGY
+=================
+
+The decoded output format will be in ASCII. To convert to compressed numeric
+format if required by application, use the following C++ snippet as reference:
+```cpp
+// symbol is Image::SymbolIterator in ZBar
+string data = symbol->get_data();
+for(char& c : data) // C++11
+{
+	numeric *= 100;		// .. 12 00
+	numeric += c - 27;	// .. 12 34
+}
+ss << setw(data.size() * 2) << setfill('0') << numeric;
+data = ss.str();
+```
+
+
 BUILDING
 ========
 
