@@ -22,6 +22,9 @@ endif
 if ENABLE_DATABAR
 zbar_libzbar_la_SOURCES += zbar/decoder/databar.h zbar/decoder/databar.c
 endif
+if ENABLE_TELEPEN
+zbar_libzbar_la_SOURCES += zbar/decoder/telepen.h zbar/decoder/telepen.c
+endif
 if ENABLE_CODE128
 zbar_libzbar_la_SOURCES += zbar/decoder/code128.h zbar/decoder/code128.c
 endif

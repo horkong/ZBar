@@ -30,7 +30,7 @@
 
 #if defined(DEBUG_DECODER) || defined(DEBUG_EAN) || defined(DEBUG_CODE93) || \
     defined(DEBUG_CODE39) || defined(DEBUG_CODABAR) || defined(DEBUG_I25) || \
-    defined(DEBUG_DATABAR) || defined(DEBUG_CODE128) || \
+    defined(DEBUG_DATABAR) || defined(DEBUG_CODE128) || defined(DEBUG_TELEPEN) ||\
     defined(DEBUG_QR_FINDER) || (defined(DEBUG_PDF417) && (DEBUG_PDF417 >= 4))
 # define DEBUG_LEVEL 1
 #endif
@@ -85,6 +85,9 @@ zbar_decoder_t *zbar_decoder_create ()
 #ifdef ENABLE_CODE128
     dcode->code128.config = 1 << ZBAR_CFG_ENABLE;
 #endif
+#ifdef ENABLE_TELEPEN
+    dcode->telepen.config = 1 << ZBAR_CFG_ENABLE;
+#endif
 #ifdef ENABLE_PDF417
     dcode->pdf417.config = 1 << ZBAR_CFG_ENABLE;
 #endif
@@ -131,6 +134,9 @@ void zbar_decoder_reset (zbar_decoder_t *dcode)
 #ifdef ENABLE_CODE128
     code128_reset(&dcode->code128);
 #endif
+#ifdef ENABLE_TELEPEN
+    telepen_reset(&dcode->telepen);
+#endif
 #ifdef ENABLE_PDF417
     pdf417_reset(&dcode->pdf417);
 #endif
@@ -166,6 +172,9 @@ void zbar_decoder_new_scan (zbar_decoder_t *dcode)
 #endif
 #ifdef ENABLE_CODE128
     code128_reset(&dcode->code128);
+#endif
+#ifdef ENABLE_TELEPEN
+    telepen_reset(&dcode->telepen);
 #endif
 #ifdef ENABLE_PDF417
     pdf417_reset(&dcode->pdf417);
@@ -262,6 +271,11 @@ zbar_symbol_type_t zbar_decode_width (zbar_decoder_t *dcode,
 #ifdef ENABLE_CODE128
     if(TEST_CFG(dcode->code128.config, ZBAR_CFG_ENABLE) &&
        (tmp = _zbar_decode_code128(dcode)) > ZBAR_PARTIAL)
+        sym = tmp;
+#endif
+#ifdef ENABLE_TELEPEN
+    if(TEST_CFG(dcode->telepen.config, ZBAR_CFG_ENABLE) &&
+       (tmp = _zbar_decode_telepen(dcode)) > ZBAR_PARTIAL)
         sym = tmp;
 #endif
 #ifdef ENABLE_DATABAR
@@ -376,6 +390,12 @@ decoder_get_configp (const zbar_decoder_t *dcode,
         break;
 #endif
 
+#ifdef ENABLE_TELEPEN
+    case ZBAR_TELEPEN:
+        config = &dcode->telepen.config;
+        break;
+#endif
+
 #ifdef ENABLE_PDF417
     case ZBAR_PDF417:
         config = &dcode->pdf417.config;
@@ -466,6 +486,11 @@ static inline int decoder_set_config_int (zbar_decoder_t *dcode,
         CFG(dcode->code128, cfg) = val;
         break;
 #endif
+#ifdef ENABLE_TELEPEN
+    case ZBAR_TELEPEN:
+        CFG(dcode->telepen, cfg) = val;
+        break;
+#endif
 #ifdef ENABLE_PDF417
     case ZBAR_PDF417:
         CFG(dcode->pdf417, cfg) = val;
@@ -485,11 +510,11 @@ int zbar_decoder_set_config (zbar_decoder_t *dcode,
 {
     if(sym == ZBAR_NONE) {
         static const zbar_symbol_type_t all[] = {
-	    ZBAR_EAN13, ZBAR_EAN2, ZBAR_EAN5, ZBAR_EAN8,
+            ZBAR_EAN13, ZBAR_EAN2, ZBAR_EAN5, ZBAR_EAN8,
             ZBAR_UPCA, ZBAR_UPCE, ZBAR_ISBN10, ZBAR_ISBN13,
             ZBAR_I25, ZBAR_DATABAR, ZBAR_DATABAR_EXP, ZBAR_CODABAR,
-	    ZBAR_CODE39, ZBAR_CODE93, ZBAR_CODE128, ZBAR_QRCODE, 
-	    ZBAR_PDF417, 0
+            ZBAR_CODE39, ZBAR_CODE93, ZBAR_CODE128, ZBAR_TELEPEN,
+            ZBAR_QRCODE, ZBAR_PDF417, 0
         };
         const zbar_symbol_type_t *symp;
         for(symp = all; *symp; symp++)

@@ -52,6 +52,8 @@ int zbar_parse_config (const char *cfgstr,
             *sym = ZBAR_QRCODE;
         else if(!strncmp(cfgstr, "db", len))
             *sym = ZBAR_DATABAR;
+		else if(!strncmp(cfgstr, "telepen", len)) // "te" is unique
+            *sym = ZBAR_TELEPEN;
         else if(len < 3)
             return(1);
         else if(!strncmp(cfgstr, "upca", len))

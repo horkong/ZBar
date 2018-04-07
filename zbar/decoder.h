@@ -54,6 +54,9 @@
 #ifdef ENABLE_CODE128
 # include "decoder/code128.h"
 #endif
+#ifdef ENABLE_TELEPEN
+# include "decoder/telepen.h"
+#endif
 #ifdef ENABLE_PDF417
 # include "decoder/pdf417.h"
 #endif
@@ -125,6 +128,9 @@ struct zbar_decoder_s {
 #endif
 #ifdef ENABLE_CODE128
     code128_decoder_t code128;          /* Code 128 decode state */
+#endif
+#ifdef ENABLE_TELEPEN
+    telepen_decoder_t telepen;          /* Telepen decode state */
 #endif
 #ifdef ENABLE_PDF417
     pdf417_decoder_t pdf417;            /* PDF417 decode state */
